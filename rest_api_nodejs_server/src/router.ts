@@ -1,16 +1,24 @@
 import { Router } from 'express';
-import {createProduct, getProducts, getProductsById} from "../src/handlers/product";
-import { body } from "express-validator";
+import {
+    createProduct,
+    deleteProduct,
+    getProducts,
+    getProductsById,
+    updateAvailability,
+    updateProduct
+} from "./handlers/product";
+import { body, param } from "express-validator";
 import {handleInputsErrors} from "./middleware";
 
 const router = Router();
 
 router.get('/', getProducts);
-router.get('/:id', getProductsById);
-
+router.get('/:id',
+    param('id').isInt().withMessage("Id no valido"),
+    handleInputsErrors,
+    getProductsById);
 
 router.post('/',
-
     // Validación
     body('name').notEmpty().withMessage("El nombre no puede ir vacío"),
     body('price')
@@ -20,16 +28,26 @@ router.post('/',
     handleInputsErrors,
     createProduct);
 
-router.patch('/', (req, res) => {
-    res.json('Hello World desde PATCH');
-});
+router.patch('/',
+    param('id').isInt().withMessage("Id no valido"),
+    handleInputsErrors,
+    updateAvailability);
 
-router.put('/', (req, res) => {
-    res.json('Hello World desde PUT');
-});
+router.put('/:id',
+    body('name').notEmpty().withMessage("El nombre no puede ir vacío"),
+    body('price')
+        .isNumeric().withMessage("Valor no valido")
+        .notEmpty().withMessage("El precio no puede ir vacío")
+        .custom(value => value > 0).withMessage("El precio no puede ser negativo"),
+    body('availability').isBoolean().withMessage("Valor no valido"),
+    handleInputsErrors,
+    updateProduct
+);
 
-router.delete('/', (req, res) => {
-    res.json('Hello World desde DELETE');
-});
+router.delete('/',
+    param('id').isInt().withMessage("Id no valido"),
+    handleInputsErrors,
+    deleteProduct
+);
 
 export default router;
