@@ -1,14 +1,19 @@
-import {Sequelize} from "sequelize";
+import {Sequelize} from "sequelize-typescript";
+import Product from "../src/models/Product.model";
+import dotenv from "dotenv"
+dotenv.config();
 
-const db = new Sequelize('postgresql://rest_api_node_typescript_1310_user:' +
-    'uEylbpecjlqBy2rWjzA0CuBKXTDzdAbY@dpg-ctkkunbqf0us739j8npg-a.' +
-    'frankfurt-postgres.render.com/rest_api_node_typescript_1310',
+const db = new Sequelize(process.env.DATABASE_URL!,
     {
         dialectOptions: {
             ssl: {
                 require: false,
             }
-        }
+        },
+        models: [__dirname + '../src/models/**/*.model.ts'],
     });
+
+db.addModels([Product]);
+
 
 export default db;
