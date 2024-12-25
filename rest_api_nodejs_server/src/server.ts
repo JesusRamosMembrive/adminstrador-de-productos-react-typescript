@@ -10,13 +10,13 @@ async function connectDB() {
     try {
         await db.authenticate();
         await db.sync();
-        console.log(colors.blue.bold('Connection has been established successfully.'));
+        // console.log(colors.blue.bold('Connection has been established successfully.'));
     } catch (error) {
-        console.error(colors.red.bold('Unable to connect to the database:'), error);
+        // console.error(colors.red.bold('Unable to connect to the database:'), error);
     }
 }
 
-connectDB().then(r => console.log('DB connected'));
+connectDB().then(r => console.log('Conectado a la base de datos'));
 
 
 const server = express();
@@ -26,5 +26,8 @@ server.use(express.json());
 
 server.use("/api/products", router);
 
+server.get('/api', (req, res) => {
+    res.json({msg: 'Mensaje desde endpoint'});
+});
 
 export default server
