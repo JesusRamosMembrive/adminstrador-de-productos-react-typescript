@@ -3,7 +3,7 @@ import {validationResult} from 'express-validator';
 
 export const handleInputsErrors = (req: Request, res: Response, next: NextFunction) => {
 
-    const errors = validationResult(req);
+    let errors = validationResult(req);
 
     // Si hay errores, devolvemos 400
     if (!errors.isEmpty()) {

@@ -1,26 +1,35 @@
-import express from 'express';
-import router from "./router";
-import db from "./config/db";
+import express from 'express'
+import colors from 'colors'
+import swaggerUi from 'swagger-ui-express'
+import swaggerSpec from './config/swagger'
+import router  from './router'
+import db from './config/db'
 
-const server = express();
 
-export const dbConnect = async () => {
+// Conectar a base de datos
+export async function connectDB() {
     try {
-        await db.authenticate();
-        db.sync(); // Agrego force para rehacer la sincronización por si la tabla tiene cambios.
-        //  Console.log(colors.magenta.bold('Successful DATABASE connection'));
+        await db.authenticate()
+        await db.sync()
+        // console.log(colors.blue( 'Conexión exitosa a la BD'))
     } catch (error) {
-        console.error(error);
+        // console.log(error)
+        console.log( colors.red.bold( 'Hubo un error al conectar a la BD') )
     }
-};
+}
 
-dbConnect().then();
+connectDB().then()
 
-server.use(express.json());
-server.use('/api/products', router);
+// Instancia de express
+const server = express()
 
-server.get('/api', (req, res) => {
-    res.json({ msg: 'Mensaje desde endpoint' });
-});
+// Leer datos de formularios
+server.use(express.json())
 
-export default server;
+server.use('/api/products', router)
+
+// Docs
+server.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec) )
+
+
+export default server
