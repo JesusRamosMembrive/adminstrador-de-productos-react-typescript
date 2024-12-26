@@ -36,7 +36,7 @@ export const createProduct: (req: Request, res: Response) => any = async (req: R
     try {
         // Crear el producto
         const product = await Product.create(req.body);
-        return res.json({data: product});
+        return res.status(201).json({data: product});
     } catch (error) {
         console.log(error); // <- Importante si quieres manejar errores con middleware de error
     }

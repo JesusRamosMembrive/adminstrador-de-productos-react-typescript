@@ -1,33 +1,26 @@
 import express from 'express';
-import router from './router';
-// @ts-ignore
-import db from '../config/db';
-import colors from 'colors';
-
-
-// Conectar base de datos
-async function connectDB() {
-    try {
-        await db.authenticate();
-        await db.sync();
-        // console.log(colors.blue.bold('Connection has been established successfully.'));
-    } catch (error) {
-        // console.error(colors.red.bold('Unable to connect to the database:'), error);
-    }
-}
-
-connectDB().then(r => console.log('Conectado a la base de datos'));
-
+import router from "./router";
+import db from "./config/db";
 
 const server = express();
 
-// Leer datos de formularios
-server.use(express.json());
+export const dbConnect = async () => {
+    try {
+        await db.authenticate();
+        db.sync(); // Agrego force para rehacer la sincronización por si la tabla tiene cambios.
+        //  Console.log(colors.magenta.bold('Successful DATABASE connection'));
+    } catch (error) {
+        console.error(error);
+    }
+};
 
-server.use("/api/products", router);
+dbConnect().then();
+
+server.use(express.json());
+server.use('/api/products', router);
 
 server.get('/api', (req, res) => {
-    res.json({msg: 'Mensaje desde endpoint'});
+    res.json({ msg: 'Mensaje desde endpoint' });
 });
 
-export default server
+export default server;
